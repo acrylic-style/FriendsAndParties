@@ -1,6 +1,7 @@
 package xyz.acrylicstyle.fap
 
 import xyz.acrylicstyle.fap.struct.FriendsTable
+import xyz.acrylicstyle.fap.struct.PartyTable
 import xyz.acrylicstyle.fap.struct.PlayersTable
 import xyz.acrylicstyle.sql.DataType
 import xyz.acrylicstyle.sql.Sequelize
@@ -18,6 +19,7 @@ class ConnectionHolder(host: String, database: String, user: String, password: S
 ) {
     lateinit var friends: FriendsTable
     lateinit var players: PlayersTable
+    lateinit var party: PartyTable
 
     fun connect() {
         FAP.log.info("Connecting to database")
@@ -49,7 +51,16 @@ class ConnectionHolder(host: String, database: String, user: String, password: S
         players = PlayersTable(define("players", arrayOf(
             TableDefinition.Builder("uuid", DataType.STRING).setAllowNull(false).build(),
             TableDefinition.Builder("name", DataType.STRING).setAllowNull(true).build(),
+            TableDefinition.Builder("party", DataType.INT).setAllowNull(true).build(),
+            TableDefinition.Builder("invitedParty", DataType.INT).setAllowNull(true).build(),
+            TableDefinition.Builder("prefix", DataType.STRING).setAllowNull(true).build(),
+            TableDefinition.Builder("admin", DataType.BOOLEAN).setAllowNull(false).setDefaultValue(false).build(),
+        )))
+        party = PartyTable(define("party", arrayOf(
+            TableDefinition.Builder("id", DataType.INT).setAllowNull(false).setPrimaryKey(true).setAutoIncrement(true).build(),
+            TableDefinition.Builder("leader", DataType.STRING).setAllowNull(false).build(),
         )))
         sync()
+        FAP.log.info("Successfully connected to database.")
     }
 }
