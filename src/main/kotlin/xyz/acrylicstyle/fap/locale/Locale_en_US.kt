@@ -53,5 +53,6 @@ class Locale_en_US: Locale("en_US") {
     override val partySummoned = "Summoned to this server by %s"
     override val partyWarping = "Warping players..."
     override val cantWarp = "You can't summon players to this server!"
+    override val alreadySentFR = "You have already sent friend request to that person."
     override val warpResult = "Warp result:"
 }

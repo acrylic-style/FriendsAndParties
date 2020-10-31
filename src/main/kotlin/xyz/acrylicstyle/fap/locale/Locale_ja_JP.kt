@@ -55,5 +55,6 @@ class Locale_ja_JP: Locale("ja_JP") {
     override val partySummoned = "%s がこのサーバーに転送させました。"
     override val partyWarping = "プレイヤーを転送中..."
     override val cantWarp = "このサーバーにプレイヤーを転送させることはできません。"
+    override val alreadySentFR = "すでにこのプレイヤーにフレンドリクエストを送信済みです。"
     override val warpResult = "転送結果:"
 }

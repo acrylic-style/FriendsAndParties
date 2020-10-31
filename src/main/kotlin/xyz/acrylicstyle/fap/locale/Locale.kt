@@ -73,6 +73,7 @@ abstract class Locale(id: String) {
     abstract val partyWarping: String
     abstract val cantWarp: String
     abstract val warpResult: String
+    abstract val alreadySentFR: String
     val partyAlreadyInServer = "${ChatColor.YELLOW}${FAP.CIRCLED_STAR}${ChatColor.GRAY}(%s): %s"
     val partyWarped = "${ChatColor.GREEN}${FAP.HEAVY_CHECK_MARK}${ChatColor.GRAY}(%s): %s"
     val partyWarpFailed = "${ChatColor.RED}${FAP.HEAVY_X}${ChatColor.GRAY}(%s): %s"

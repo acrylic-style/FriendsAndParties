@@ -60,6 +60,10 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             }
             "warp" -> doWarp(sender)
             "hijack" -> doHijack(sender)
+            "join" -> {
+                if (args.size == 1) return doInvite(sender, args[0])
+                doJoin(sender, args[1])
+            }
             else -> doInvite(sender, args[0])
         }
     }
@@ -318,6 +322,33 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
         }.queue()
     }
 
+    private fun doJoin(sender: ProxiedPlayer, targetName: String) {
+        val target = ProxyServer.getInstance().getPlayer(targetName)
+        if (target == null) {
+            sender.sendMessage(Locale.getLocale().noPlayer.toComponent(ChatColor.RED))
+            return
+        }
+        FAP.db.players.getPlayer(sender.uniqueId).then { player ->
+            if (!player.admin) return@then sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+            val party = FAP.db.party.getParty(target.uniqueId).complete()
+            if (party == null) {
+                sender.sendMessage("${ChatColor.RED}This player is not in the party.".toComponent())
+                return@then
+            }
+            player.party = party.id
+            player.update().queue()
+            party.getOnlineMembers().then { players ->
+                players.remove(sender)
+                players.broadcastMessage(FAP.blueSeparator.toComponent())
+                players.broadcastMessage(Locale.getLocale().someoneJoinedParty.format("${player.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+                players.broadcastMessage(FAP.blueSeparator.toComponent())
+                sender.sendMessage(FAP.blueSeparator.toComponent())
+                sender.sendMessage(Locale.getLocale().joinedParty.format("${party.leader.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+                sender.sendMessage(FAP.blueSeparator.toComponent())
+            }.queue()
+        }.queue()
+    }
+
     private fun doInvite(sender: ProxiedPlayer, targetName: String) {
         val target = ProxyServer.getInstance().getPlayer(targetName)
         if (target == null) {
@@ -333,6 +364,10 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
                 player.update().complete()
             }
             if (party == null) throw AssertionError("Should not be null")
+            if (party.leader.uuid != sender.uniqueId) {
+                sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                return@then
+            }
             val targetPlayer = FAP.db.players.getPlayer(target.uniqueId).complete()
             if (targetPlayer.party != null || targetPlayer.invitedParty != null) {
                 sender.sendMessage(Locale.getLocale().inOtherParty.toComponent(ChatColor.RED))

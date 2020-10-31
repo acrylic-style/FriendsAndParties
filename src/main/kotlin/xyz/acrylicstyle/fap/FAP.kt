@@ -14,6 +14,7 @@ import net.md_5.bungee.event.EventHandler
 import util.Collection
 import util.CollectionList
 import util.ICollectionList
+import xyz.acrylicstyle.fap.commands.FAPCommand
 import xyz.acrylicstyle.fap.commands.FriendCommand
 import xyz.acrylicstyle.fap.commands.FriendListCommand
 import xyz.acrylicstyle.fap.commands.PartyChatCommand
@@ -52,6 +53,7 @@ class FAP: Plugin(), Listener {
         proxy.pluginManager.registerCommand(this, PartyListCommand())
         proxy.pluginManager.registerCommand(this, FriendCommand())
         proxy.pluginManager.registerCommand(this, FriendListCommand())
+        proxy.pluginManager.registerCommand(this, FAPCommand())
     }
 
     override fun onDisable() {

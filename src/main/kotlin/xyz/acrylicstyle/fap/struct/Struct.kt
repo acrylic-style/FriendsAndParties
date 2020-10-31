@@ -40,6 +40,8 @@ class FriendsTable(private val table: Table) {
 class PlayersTable(private val table: Table) {
     private val playersCache = HashMap<UUID, Player>()
 
+    fun clearCache() = playersCache.clear()
+
     fun removeAllParties(): Promise<Void> {
         return Promise.async {
             val statement = FAP.db.connection.createStatement()
@@ -108,6 +110,7 @@ class PartyTable(private val table: Table) {
         list.forEach { player ->
             if (player.invitedParty == id) player.invitedParty = null
             if (player.party == id) player.party = null
+            player.update().complete()
         }
     }.then { null }
 

@@ -9,18 +9,21 @@ import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
+import net.md_5.bungee.api.plugin.TabExecutor
 import net.md_5.bungee.api.scheduler.ScheduledTask
 import util.Collection
+import util.CollectionList
 import util.promise.Promise
 import xyz.acrylicstyle.fap.FAP
 import xyz.acrylicstyle.fap.locale.Locale
 import xyz.acrylicstyle.fap.struct.Player
+import xyz.acrylicstyle.fap.struct.doFilter
 import xyz.acrylicstyle.fap.struct.getPlayers
 import xyz.acrylicstyle.fap.struct.toComponent
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-class FriendCommand: Command("friend", null, "f") {
+class FriendCommand: Command("friend", null, "f"), TabExecutor {
     override fun execute(sender: CommandSender, args: Array<String>) {
         if (sender !is ProxiedPlayer) return sender.sendMessage("Bye bye :)".toComponent())
         if (args.isEmpty()) return sendHelp(sender)
@@ -63,6 +66,13 @@ class FriendCommand: Command("friend", null, "f") {
             return
         }
         if (tasks[target.uniqueId] == null) tasks[target.uniqueId] = Collection()
+        if (tasks[sender.uniqueId] == null) tasks[sender.uniqueId] = Collection()
+        if (tasks[sender.uniqueId]!!.containsKey(target.uniqueId)) {
+            sender.sendMessage(FAP.blueSeparator.toComponent())
+            sender.sendMessage(Locale.getLocale().alreadySentFR.toComponent(ChatColor.RED))
+            sender.sendMessage(FAP.blueSeparator.toComponent())
+            return
+        }
         if (tasks[target.uniqueId]!!.containsKey(sender.uniqueId)) {
             doAccept(sender, targetName)
             return
@@ -99,7 +109,6 @@ class FriendCommand: Command("friend", null, "f") {
                     target.sendMessage(FAP.blueSeparator.toComponent())
                 }
             }, 3, TimeUnit.MINUTES)
-            if (tasks[sender.uniqueId] == null) tasks[sender.uniqueId] = Collection()
             tasks[sender.uniqueId]!![target.uniqueId] = task
         }.queue()
     }
@@ -150,6 +159,10 @@ class FriendCommand: Command("friend", null, "f") {
                 sender.sendMessage(Locale.getLocale().invalidArgs.toComponent(ChatColor.RED))
                 return@then
             }
+            if (sender.name == target.name) {
+                sender.sendMessage(Locale.getLocale().invalidArgs.toComponent(ChatColor.RED))
+                return@then
+            }
             val isFriend = FAP.db.friends.isFriend(sender.uniqueId, target.uuid).complete()
             if (!isFriend) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
@@ -182,5 +195,18 @@ class FriendCommand: Command("friend", null, "f") {
         }
 
         private fun name(player: Player) = "  ${if (player.isOnline()) ChatColor.GREEN else ChatColor.RED}${FAP.CIRCLE} ${player.getFullName()}"
+    }
+
+    private val commands = CollectionList.of("add", "remove", "list", "accept")
+
+    override fun onTabComplete(sender: CommandSender, args: Array<String>): Iterable<String> {
+        if (args.isEmpty()) return commands
+        if (args.size == 1) return commands.doFilter(args[0])
+        if (args.size == 2) {
+            if (args[0] == "add" || args[0] == "remove" || args[0] == "accept") {
+                return CollectionList(ProxyServer.getInstance().players).map { p -> p.name }.doFilter(args[1])
+            }
+        }
+        return emptyList()
     }
 }
