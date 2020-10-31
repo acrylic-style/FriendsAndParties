@@ -22,8 +22,6 @@ class ReplyCommand: Command("reply", null, "r") {
             val target = FAP.db.players.getPlayer(lastUUID).complete()
             sender.sendMessage("${ChatColor.LIGHT_PURPLE}To ${target.getFullName()}: ${ChatColor.WHITE}${message}".toComponent())
             targetPlayer.sendMessage("${ChatColor.LIGHT_PURPLE}From ${player.getFullName()}: ${ChatColor.WHITE}${message}".toComponent())
-            sender.playSound("ORB_PICKUP", 1F, 1F)
-            sender.playSound("ENTITY_EXPERIENCE_ORB_PICKUP", 1F, 1F)
             targetPlayer.playSound("ORB_PICKUP", 1F, 1F)
             targetPlayer.playSound("ENTITY_EXPERIENCE_ORB_PICKUP", 1F, 1F)
             target.lastMessageFrom = sender.uniqueId

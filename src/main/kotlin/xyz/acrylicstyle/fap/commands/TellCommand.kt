@@ -35,8 +35,6 @@ class TellCommand: Command("tell", null, "w", "msg", "message"), TabExecutor {
                 return@then sender.sendMessage(Locale.getLocale().cantSendMessage.toComponent(ChatColor.RED))
             sender.sendMessage("${ChatColor.LIGHT_PURPLE}To ${target.getFullName()}${ChatColor.GREEN}: ${ChatColor.WHITE}${message}".toComponent())
             targetPlayer.sendMessage("${ChatColor.LIGHT_PURPLE}From ${player.getFullName()}${ChatColor.GREEN}: ${ChatColor.WHITE}${message}".toComponent())
-            sender.playSound("ORB_PICKUP", 1F, 1F)
-            sender.playSound("ENTITY_EXPERIENCE_ORB_PICKUP", 1F, 1F)
             targetPlayer.playSound("ORB_PICKUP", 1F, 1F)
             targetPlayer.playSound("ENTITY_EXPERIENCE_ORB_PICKUP", 1F, 1F)
             target.lastMessageFrom = sender.uniqueId
