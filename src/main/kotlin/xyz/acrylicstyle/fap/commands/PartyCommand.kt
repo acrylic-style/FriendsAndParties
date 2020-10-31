@@ -355,8 +355,11 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             sender.sendMessage(TextComponent("${ChatColor.RED}${Locale.getLocale().noPlayer}"))
             return
         }
-        FAP.db.party.getParty(sender.uniqueId).then { party2 ->
+        FAP.db.players.getPlayer(target.uniqueId).then { targetPlayer ->
             val player = FAP.db.players.getPlayer(sender.uniqueId).complete()
+            if (!targetPlayer.acceptingParty && !player.admin)
+                return@then sender.sendMessage(Locale.getLocale().cantSendPartyInvite.toComponent(ChatColor.RED))
+            val party2 = FAP.db.party.getParty(sender.uniqueId).complete()
             var party: Party? = party2
             if (party2 == null) {
                 party = FAP.db.party.createParty(player).complete()
@@ -368,7 +371,6 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
                 sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
                 return@then
             }
-            val targetPlayer = FAP.db.players.getPlayer(target.uniqueId).complete()
             if (targetPlayer.party != null || targetPlayer.invitedParty != null) {
                 sender.sendMessage(Locale.getLocale().inOtherParty.toComponent(ChatColor.RED))
                 return@then

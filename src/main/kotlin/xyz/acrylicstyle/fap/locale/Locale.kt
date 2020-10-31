@@ -74,6 +74,15 @@ abstract class Locale(id: String) {
     abstract val cantWarp: String
     abstract val warpResult: String
     abstract val alreadySentFR: String
+    abstract val privacyPartyTurnedOn: String
+    abstract val privacyFriendTurnedOn: String
+    abstract val privacyMessageTurnedOn: String
+    abstract val privacyPartyTurnedOff: String
+    abstract val privacyFriendTurnedOff: String
+    abstract val privacyMessageTurnedOff: String
+    abstract val cantSendPartyInvite: String
+    abstract val cantSendFriendRequest: String
+    abstract val cantSendMessage: String
     val partyAlreadyInServer = "${ChatColor.YELLOW}${FAP.CIRCLED_STAR}${ChatColor.GRAY}(%s): %s"
     val partyWarped = "${ChatColor.GREEN}${FAP.HEAVY_CHECK_MARK}${ChatColor.GRAY}(%s): %s"
     val partyWarpFailed = "${ChatColor.RED}${FAP.HEAVY_X}${ChatColor.GRAY}(%s): %s"

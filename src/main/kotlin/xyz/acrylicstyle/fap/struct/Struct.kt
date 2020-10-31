@@ -4,8 +4,10 @@ import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import net.md_5.bungee.api.connection.Server
 import org.jetbrains.annotations.Contract
 import util.CollectionList
+import util.DataSerializer
 import util.promise.Promise
 import xyz.acrylicstyle.fap.FAP
 import xyz.acrylicstyle.sql.Table
@@ -14,6 +16,8 @@ import xyz.acrylicstyle.sql.options.FindOptions
 import xyz.acrylicstyle.sql.options.InsertOptions
 import xyz.acrylicstyle.sql.options.Sort
 import xyz.acrylicstyle.sql.options.UpsertOptions
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -97,6 +101,10 @@ class PlayersTable(private val table: Table) {
             .addValue("invitedParty", player.invitedParty)
             .addValue("prefix", player.prefix)
             .addValue("admin", player.admin)
+            .addValue("lastMessageFrom", player.lastMessageFrom?.toString())
+            .addValue("acceptingParty", player.acceptingParty)
+            .addValue("acceptingFriend", player.acceptingFriend)
+            .addValue("acceptingMessage", player.acceptingMessage)
             .build()).then { null }
     }
 }
@@ -158,6 +166,10 @@ data class Player(
     var friends: CollectionList<UUID>?,
     var prefix: String?,
     var admin: Boolean,
+    var lastMessageFrom: UUID?,
+    var acceptingParty: Boolean,
+    var acceptingFriend: Boolean,
+    var acceptingMessage: Boolean,
 ) {
     companion object {
         fun parse(td: TableData) = Player(
@@ -168,6 +180,10 @@ data class Player(
             null,
             td.getString("prefix"),
             td.getBoolean("admin") ?: false,
+            td.getString("lastMessageFrom")?.let { UUID.fromString(it) },
+            td.getBoolean("acceptingParty") ?: true,
+            td.getBoolean("acceptingFriend") ?: true,
+            td.getBoolean("acceptingMessage") ?: true,
         )
     }
 
@@ -197,3 +213,21 @@ fun CollectionList<ProxiedPlayer>.broadcastMessage(text: TextComponent) = this.f
 
 fun String.toComponent() = TextComponent(this)
 fun String.toComponent(color: ChatColor) = TextComponent("${color}$this")
+
+fun Server.sendData(tag: String, subchannel: String, message: String) {
+    val baos = ByteArrayOutputStream()
+    val output = DataOutputStream(baos)
+    output.writeUTF(subchannel)
+    output.writeUTF(message)
+    this.sendData(tag, baos.toByteArray())
+}
+
+fun Server.sendData(tag: String, subchannel: String, serializer: DataSerializer) = sendData(tag, subchannel, serializer.serialize())
+
+fun ProxiedPlayer.playSound(sound: String, volume: Float, pitch: Float) {
+    val serializer = DataSerializer()
+    serializer.set("sound", sound)
+    serializer.set("volume", volume.toString())
+    serializer.set("pitch", pitch.toString())
+    this.server.sendData("tomeito_lib:sound", this.uniqueId.toString(), serializer)
+}

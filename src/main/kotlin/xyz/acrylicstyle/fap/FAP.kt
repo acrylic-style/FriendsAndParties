@@ -20,6 +20,9 @@ import xyz.acrylicstyle.fap.commands.FriendListCommand
 import xyz.acrylicstyle.fap.commands.PartyChatCommand
 import xyz.acrylicstyle.fap.commands.PartyCommand
 import xyz.acrylicstyle.fap.commands.PartyListCommand
+import xyz.acrylicstyle.fap.commands.PrivacyCommand
+import xyz.acrylicstyle.fap.commands.ReplyCommand
+import xyz.acrylicstyle.fap.commands.TellCommand
 import xyz.acrylicstyle.fap.locale.Locale
 import xyz.acrylicstyle.fap.locale.Locale_en_US
 import xyz.acrylicstyle.fap.locale.Locale_ja_JP
@@ -48,12 +51,17 @@ class FAP: Plugin(), Listener {
         db.players.removeAllParties().complete()
         log.info("Removed all parties")
         ICollectionList.asList(config.getStringList("noWarpServers")).map { s -> s.toLowerCase() }.unique().forEach { noWarpServers.add(it) }
+        proxy.registerChannel("fap:prefix")
+        proxy.pluginManager.registerListener(this, FAPChannelListener)
         proxy.pluginManager.registerCommand(this, PartyCommand())
         proxy.pluginManager.registerCommand(this, PartyChatCommand())
         proxy.pluginManager.registerCommand(this, PartyListCommand())
         proxy.pluginManager.registerCommand(this, FriendCommand())
         proxy.pluginManager.registerCommand(this, FriendListCommand())
         proxy.pluginManager.registerCommand(this, FAPCommand())
+        proxy.pluginManager.registerCommand(this, TellCommand())
+        proxy.pluginManager.registerCommand(this, ReplyCommand())
+        proxy.pluginManager.registerCommand(this, PrivacyCommand())
     }
 
     override fun onDisable() {

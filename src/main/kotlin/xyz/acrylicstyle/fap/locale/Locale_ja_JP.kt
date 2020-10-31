@@ -57,4 +57,13 @@ class Locale_ja_JP: Locale("ja_JP") {
     override val cantWarp = "このサーバーにプレイヤーを転送させることはできません。"
     override val alreadySentFR = "すでにこのプレイヤーにフレンドリクエストを送信済みです。"
     override val warpResult = "転送結果:"
+    override val privacyPartyTurnedOn = "パーティー招待を受け取るようにしました。"
+    override val privacyFriendTurnedOn = "フレンドリクエストを受け取るようにしました。"
+    override val privacyMessageTurnedOn = "プライベートメッセージを受け取るようにしました。"
+    override val privacyPartyTurnedOff = "パーティー招待を受け取らないようにしました。"
+    override val privacyFriendTurnedOff = "フレンドリクエストを受け取らないようにしました。"
+    override val privacyMessageTurnedOff = "プライベートメッセージを受け取らないようにしました。"
+    override val cantSendPartyInvite = "このプレイヤーにパーティー招待を送ることはできません！"
+    override val cantSendFriendRequest = "このプレイヤーにフレンドリクエストを送ることはできません！"
+    override val cantSendMessage = "このプレイヤーにはプライベートメッセージを送信できません。"
 }

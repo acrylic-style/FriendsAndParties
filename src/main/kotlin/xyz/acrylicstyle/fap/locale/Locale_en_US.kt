@@ -55,4 +55,13 @@ class Locale_en_US: Locale("en_US") {
     override val cantWarp = "You can't summon players to this server!"
     override val alreadySentFR = "You have already sent friend request to that person."
     override val warpResult = "Warp result:"
+    override val privacyPartyTurnedOn = "Turned on receiving party invites."
+    override val privacyFriendTurnedOn = "Turned on receiving friend requests."
+    override val privacyMessageTurnedOn = "Turned on receiving private messages."
+    override val privacyPartyTurnedOff = "Turned off receiving party invites."
+    override val privacyFriendTurnedOff = "Turned off receiving friend requests."
+    override val privacyMessageTurnedOff = "Turned off receiving private messages."
+    override val cantSendPartyInvite = "You are not allowed to send party invite to this person!"
+    override val cantSendFriendRequest = "You are not allowed to send friend request to this person!"
+    override val cantSendMessage = "You can't send private message to this player."
 }

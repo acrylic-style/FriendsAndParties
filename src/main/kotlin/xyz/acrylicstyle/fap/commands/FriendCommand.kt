@@ -86,6 +86,8 @@ class FriendCommand: Command("friend", null, "f"), TabExecutor {
             }
             val targetPlayer = FAP.db.players.getPlayer(target.uniqueId).complete()
             val player = FAP.db.players.getPlayer(sender.uniqueId).complete()
+            if (!targetPlayer.acceptingFriend && !player.admin)
+                return@then sender.sendMessage(Locale.getLocale().cantSendFriendRequest.toComponent(ChatColor.RED))
             sender.sendMessage(FAP.blueSeparator.toComponent())
             sender.sendMessage(Locale.getLocale().sentFR.format("${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
             sender.sendMessage(FAP.blueSeparator.toComponent())
@@ -170,10 +172,9 @@ class FriendCommand: Command("friend", null, "f"), TabExecutor {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
-            val player = FAP.db.players.getPlayer(sender.uniqueId).complete()
             FAP.db.friends.removeFriend(sender.uniqueId, target.uuid).complete()
             sender.sendMessage(FAP.blueSeparator.toComponent())
-            sender.sendMessage(Locale.getLocale().removedFriend.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.GREEN))
+            sender.sendMessage(Locale.getLocale().removedFriend.format("${target.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.GREEN))
             sender.sendMessage(FAP.blueSeparator.toComponent())
         }.queue()
     }

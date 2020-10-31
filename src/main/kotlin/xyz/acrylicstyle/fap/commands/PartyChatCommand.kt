@@ -11,6 +11,7 @@ import xyz.acrylicstyle.fap.locale.Locale
 import xyz.acrylicstyle.fap.struct.Party
 import xyz.acrylicstyle.fap.struct.Player
 import xyz.acrylicstyle.fap.struct.broadcastMessage
+import xyz.acrylicstyle.fap.struct.playSound
 import xyz.acrylicstyle.fap.struct.toComponent
 
 class PartyChatCommand: Command("partychat", null, "pc") {
@@ -26,6 +27,10 @@ class PartyChatCommand: Command("partychat", null, "pc") {
             val message = ICollectionList.asList(args).join(" ")
             party.getOnlineMembers().then {
                 it.broadcastMessage("${ChatColor.BLUE}Party > ${player.getFullName()}${ChatColor.GRAY}: ${ChatColor.WHITE}${message}".toComponent())
+                it.forEach { p ->
+                    p.playSound("ORB_PICKUP", 1F, 1F)
+                    p.playSound("ENTITY_EXPERIENCE_ORB_PICKUP", 1F, 1F)
+                }
             }.queue()
         }.queue()
     }

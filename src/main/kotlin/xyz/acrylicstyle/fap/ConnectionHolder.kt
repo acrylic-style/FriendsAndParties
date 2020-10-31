@@ -55,6 +55,10 @@ class ConnectionHolder(host: String, database: String, user: String, password: S
             TableDefinition.Builder("invitedParty", DataType.INT).setAllowNull(true).build(),
             TableDefinition.Builder("prefix", DataType.STRING).setAllowNull(true).build(),
             TableDefinition.Builder("admin", DataType.BOOLEAN).setAllowNull(false).setDefaultValue(false).build(),
+            TableDefinition.Builder("lastMessageFrom", DataType.STRING).setAllowNull(true).build(),
+            TableDefinition.Builder("acceptingParty", DataType.BOOLEAN).setAllowNull(false).setDefaultValue(true).build(),
+            TableDefinition.Builder("acceptingFriend", DataType.BOOLEAN).setAllowNull(false).setDefaultValue(true).build(),
+            TableDefinition.Builder("acceptingMessage", DataType.BOOLEAN).setAllowNull(false).setDefaultValue(true).build(),
         )))
         party = PartyTable(define("party", arrayOf(
             TableDefinition.Builder("id", DataType.INT).setAllowNull(false).setPrimaryKey(true).setAutoIncrement(true).build(),
