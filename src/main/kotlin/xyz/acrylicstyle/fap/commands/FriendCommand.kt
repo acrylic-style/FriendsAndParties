@@ -23,7 +23,7 @@ import xyz.acrylicstyle.fap.struct.toComponent
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-class FriendCommand: Command("friend", null, "f"), TabExecutor {
+class FriendCommand: Command("friend", null, "fr"), TabExecutor {
     override fun execute(sender: CommandSender, args: Array<String>) {
         if (sender !is ProxiedPlayer) return sender.sendMessage("Bye bye :)".toComponent())
         if (args.isEmpty()) return sendHelp(sender)
