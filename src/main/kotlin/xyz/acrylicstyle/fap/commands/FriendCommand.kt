@@ -23,7 +23,7 @@ import xyz.acrylicstyle.fap.struct.toComponent
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-class FriendCommand: Command("friend", null, "fr"), TabExecutor {
+class FriendCommand: Command("friend", null, "fr"/*, "f"*/), TabExecutor {
     override fun execute(sender: CommandSender, args: Array<String>) {
         if (sender !is ProxiedPlayer) return sender.sendMessage("Bye bye :)".toComponent())
         if (args.isEmpty()) return sendHelp(sender)
@@ -47,11 +47,11 @@ class FriendCommand: Command("friend", null, "fr"), TabExecutor {
 
     private fun sendHelp(sender: ProxiedPlayer) {
         sender.sendMessage(FAP.blueSeparator.toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/f <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpAdd}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/f add <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpAdd}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/f accept <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpAccept}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/f remove <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpRemove}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/f list ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpList}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/fr <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpAdd}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/fr add <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpAdd}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/fr accept <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpAccept}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/fr remove <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpRemove}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/fr list ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).friendHelpList}".toComponent())
         sender.sendMessage(FAP.blueSeparator.toComponent())
     }
 
@@ -94,7 +94,7 @@ class FriendCommand: Command("friend", null, "fr"), TabExecutor {
             target.sendMessage(FAP.blueSeparator.toComponent())
             target.sendMessage(Locale.getLocale(sender).receivedFR.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
             val text = TextComponent(ChatColor.AQUA.toString() + Locale.getLocale(sender).receivedFR2)
-            text.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/f accept ${sender.name}")
+            text.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fr accept ${sender.name}")
             text.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("${ChatColor.YELLOW}${Locale.getLocale(sender).clickToAcceptFR}"))
             target.sendMessage(text)
             target.sendMessage(FAP.blueSeparator.toComponent())
