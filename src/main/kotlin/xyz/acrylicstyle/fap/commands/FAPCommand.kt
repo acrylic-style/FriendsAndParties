@@ -16,7 +16,7 @@ class FAPCommand: Command("fap"), TabExecutor {
     override fun execute(sender: CommandSender, args: Array<String>) {
         if (sender !is ProxiedPlayer) return
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
-            if (!player.admin) return@then sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+            if (!player.admin) return@then sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
             if (args.isEmpty()) return@then sender.sendMessage("${ChatColor.RED}/fap <clearPlayerCache | resetParty | prefix | admin>".toComponent())
             when (args[0]) {
                 "clearPlayerCache" -> doClearPlayerCache(sender)
@@ -48,7 +48,7 @@ class FAPCommand: Command("fap"), TabExecutor {
         @Suppress("DEPRECATION")
         FAP.db.players.getPlayer(targetName).then { player ->
             if (player == null) {
-                sender.sendMessage(Locale.getLocale().noPlayer.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPlayer.toComponent(ChatColor.RED))
                 return@then
             }
             player.prefix = if (prefix == "null") null else prefix
@@ -62,11 +62,11 @@ class FAPCommand: Command("fap"), TabExecutor {
         @Suppress("DEPRECATION")
         FAP.db.players.getPlayer(targetName).then { player ->
             if (player == null) {
-                sender.sendMessage(Locale.getLocale().noPlayer.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPlayer.toComponent(ChatColor.RED))
                 return@then
             }
             if (player.uuid == sender.uniqueId) {
-                sender.sendMessage(Locale.getLocale().invalidArgs.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).invalidArgs.toComponent(ChatColor.RED))
                 return@then
             }
             player.admin = bool

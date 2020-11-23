@@ -70,29 +70,29 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
 
     private fun sendHelp(sender: ProxiedPlayer) {
         sender.sendMessage(FAP.blueSeparator.toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p <${Locale.getLocale().player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpInvite}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p invite <${Locale.getLocale().player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpInvite}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p leave ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpLeave}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p list ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpList}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p disband ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpDisband}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p kick <${Locale.getLocale().player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpKick}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p promote <${Locale.getLocale().player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpPromote}".toComponent())
-        sender.sendMessage("${ChatColor.AQUA}/p warp ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale().partyHelpWarp}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpInvite}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p invite <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpInvite}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p leave ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpLeave}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p list ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpList}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p disband ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpDisband}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p kick <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpKick}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p promote <${Locale.getLocale(sender).player}> ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpPromote}".toComponent())
+        sender.sendMessage("${ChatColor.AQUA}/p warp ${ChatColor.GRAY}- ${ChatColor.GREEN}${Locale.getLocale(sender).partyHelpWarp}".toComponent())
         sender.sendMessage(FAP.blueSeparator.toComponent())
     }
 
     private fun doHijack(sender: ProxiedPlayer) {
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
             if (!player.admin) {
-                return@then sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                return@then sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
             }
             val party = FAP.db.party.getParty(player.uuid).complete()
-                ?: return@then sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                ?: return@then sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
             party.leader = player
             party.update().queue()
             party.getOnlineMembers().then {
                 it.broadcastMessage(FAP.goldSeparator.toComponent())
-                it.broadcastMessage(Locale.getLocale().partyHijacked.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                it.forEach { p -> p.sendMessage(Locale.getLocale(p).partyHijacked.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
                 it.broadcastMessage(FAP.goldSeparator.toComponent())
             }.queue()
         }.queue()
@@ -102,26 +102,26 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
             val party = FAP.db.party.getParty(player.uuid).complete()
             if (party == null) {
-                sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                 return@then
             }
             val target = ProxyServer.getInstance().getPlayer(targetName)
             if (target == null) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().offlinePlayer.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).offlinePlayer.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
             val targetPlayer = FAP.db.players.getPlayer(target.uniqueId).complete()
             if (targetPlayer.uuid == sender.uniqueId) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().invalidArgs.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).invalidArgs.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
             if (party.leader.uuid != sender.uniqueId) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
@@ -129,7 +129,7 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             party.update().queue()
             party.getOnlineMembers().then {
                 it.broadcastMessage(FAP.goldSeparator.toComponent())
-                it.broadcastMessage(Locale.getLocale().partyPromoted.format("${player.getFullName()}${ChatColor.YELLOW}", "${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                it.forEach { p -> p.sendMessage(Locale.getLocale(p).partyPromoted.format("${player.getFullName()}${ChatColor.YELLOW}", "${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
                 it.broadcastMessage(FAP.goldSeparator.toComponent())
             }.queue()
         }.queue()
@@ -139,7 +139,7 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
             val party = FAP.db.party.getParty(sender.uniqueId).complete()
             if (party == null) {
-                sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                 return@then
             }
             if (party.leader.uuid == sender.uniqueId) {
@@ -149,11 +149,11 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
                 player.update().queue()
                 party.getOnlineMembers().then { players ->
                     sender.sendMessage(FAP.blueSeparator.toComponent())
-                    sender.sendMessage(Locale.getLocale().leftParty.toComponent(ChatColor.YELLOW))
+                    sender.sendMessage(Locale.getLocale(sender).leftParty.toComponent(ChatColor.YELLOW))
                     sender.sendMessage(FAP.blueSeparator.toComponent())
                     players.remove(sender)
                     players.broadcastMessage(FAP.blueSeparator.toComponent())
-                    players.broadcastMessage(Locale.getLocale().someoneLeftParty.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                    players.forEach { p -> p.sendMessage(Locale.getLocale(p).someoneLeftParty.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
                     players.broadcastMessage(FAP.blueSeparator.toComponent())
                 }.queue()
             }
@@ -164,25 +164,25 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
             val party = FAP.db.party.getParty(sender.uniqueId).complete()
             if (party == null) {
-                sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                 return@then
             }
             if (party.leader.uuid != sender.uniqueId) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
             @Suppress("DEPRECATION") val target = FAP.db.players.getPlayer(targetName).complete()
             if (target == null) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().noPlayer.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPlayer.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
             if (party.id != target.party) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().notInThisParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInThisParty.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
@@ -190,16 +190,16 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             target.update().queue()
             ProxyServer.getInstance().getPlayer(target.uuid)?.let {
                 it.sendMessage(FAP.goldSeparator.toComponent())
-                it.sendMessage(Locale.getLocale().kickedFromParty.format("${ChatColor.WHITE}$reason").toComponent(ChatColor.YELLOW))
+                it.sendMessage(Locale.getLocale(it).kickedFromParty.format("${ChatColor.WHITE}$reason").toComponent(ChatColor.YELLOW))
                 it.sendMessage(FAP.goldSeparator.toComponent())
             }
             party.getOnlineMembers().then { players ->
                 sender.sendMessage(FAP.goldSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().kickedParty.format("${target.getFullName()}${ChatColor.YELLOW}", "${ChatColor.WHITE}$reason").toComponent(ChatColor.YELLOW))
+                sender.sendMessage(Locale.getLocale(sender).kickedParty.format("${target.getFullName()}${ChatColor.YELLOW}", "${ChatColor.WHITE}$reason").toComponent(ChatColor.YELLOW))
                 sender.sendMessage(FAP.goldSeparator.toComponent())
                 players.remove(sender)
                 players.broadcastMessage(FAP.goldSeparator.toComponent())
-                players.broadcastMessage(Locale.getLocale().someoneLeftParty.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                players.forEach { p -> p.sendMessage(Locale.getLocale(p).someoneLeftParty.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
                 players.broadcastMessage(FAP.goldSeparator.toComponent())
             }.queue()
         }.queue()
@@ -209,11 +209,11 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
             val party = FAP.db.party.getParty(sender.uniqueId).complete()
             if (party == null) {
-                sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                 return@then
             }
             if (party.leader.uuid != sender.uniqueId) {
-                sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
                 return@then
             }
             doDisband(player, party)
@@ -223,7 +223,7 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
     private fun doDisband(player: Player, party: Party) {
         party.getOnlineMembers().then { players ->
             players.broadcastMessage(FAP.blueSeparator.toComponent())
-            players.broadcastMessage(Locale.getLocale().partyDisbanded.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+            players.forEach { p -> p.sendMessage(Locale.getLocale(p).partyDisbanded.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
             players.broadcastMessage(FAP.blueSeparator.toComponent())
             FAP.db.players.getPendingPartyPlayers(party.id).then { players1 ->
                 players1.forEach { p ->
@@ -237,17 +237,17 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
     private fun doAccept(sender: ProxiedPlayer, partyIdString: String) {
         val partyId = partyIdString.toIntOrNull()
         if (partyId == null) {
-            sender.sendMessage("${ChatColor.RED}${Locale.getLocale().invalidArgs}".toComponent())
+            sender.sendMessage("${ChatColor.RED}${Locale.getLocale(sender).invalidArgs}".toComponent())
             return
         }
         FAP.db.party.getParty(partyId).then { party ->
             if (party == null) {
-                sender.sendMessage("${ChatColor.RED}${Locale.getLocale().invalidArgs}".toComponent())
+                sender.sendMessage("${ChatColor.RED}${Locale.getLocale(sender).invalidArgs}".toComponent())
                 return@then
             }
             val player = FAP.db.players.getPlayer(sender.uniqueId).complete()
             if (player.invitedParty == null || party.id != player.invitedParty) {
-                sender.sendMessage("${ChatColor.RED}${Locale.getLocale().invalidArgs}".toComponent())
+                sender.sendMessage("${ChatColor.RED}${Locale.getLocale(sender).invalidArgs}".toComponent())
                 return@then
             }
             player.party = player.invitedParty // accept
@@ -257,10 +257,10 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             party.getOnlineMembers().then { players ->
                 players.remove(sender)
                 players.broadcastMessage(FAP.blueSeparator.toComponent())
-                players.broadcastMessage(Locale.getLocale().someoneJoinedParty.format("${player.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+                players.forEach { p -> p.sendMessage(Locale.getLocale(p).someoneJoinedParty.format("${player.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN)) }
                 players.broadcastMessage(FAP.blueSeparator.toComponent())
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().joinedParty.format("${party.leader.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).joinedParty.format("${party.leader.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
             }.queue()
         }.queue()
@@ -269,12 +269,12 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
     private fun doWarp(sender: ProxiedPlayer) {
         FAP.db.party.getParty(sender.uniqueId).then { party ->
             if (party == null) {
-                sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                 return@then
             }
             if (party.leader.uuid != sender.uniqueId) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
@@ -282,11 +282,11 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             val p = party.leader
             if (FAP.noWarpServers.contains(info.name.toLowerCase()) && !p.admin) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().cantWarp.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).cantWarp.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
-            sender.sendMessage(Locale.getLocale().partyWarping.toComponent(ChatColor.GREEN))
+            sender.sendMessage(Locale.getLocale(sender).partyWarping.toComponent(ChatColor.GREEN))
             val sameServer = CollectionList<String>()
             val warped = CollectionList<String>()
             val failed = CollectionList<String>()
@@ -297,7 +297,7 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
                     }
                     player.connect(info)
                     player.sendMessage(FAP.blueSeparator.toComponent())
-                    player.sendMessage(Locale.getLocale().partySummoned.format("${p.getFullName()}${ChatColor.GOLD}").toComponent(ChatColor.GOLD))
+                    player.sendMessage(Locale.getLocale(player).partySummoned.format("${p.getFullName()}${ChatColor.GOLD}").toComponent(ChatColor.GOLD))
                     player.sendMessage(FAP.blueSeparator.toComponent())
                 }
                 Promise.sleepAsync(3000).then {
@@ -312,10 +312,10 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
                         }
                     }
                     sender.sendMessage(FAP.blueSeparator.toComponent())
-                    sender.sendMessage(Locale.getLocale().warpResult.toComponent(ChatColor.GREEN))
-                    sender.sendMessage(Locale.getLocale().partyAlreadyInServer.format("${ChatColor.YELLOW}${sameServer.size}${ChatColor.GRAY}", sameServer.join("${ChatColor.GRAY}, ")).toComponent())
-                    sender.sendMessage(Locale.getLocale().partyWarped.format("${ChatColor.YELLOW}${warped.size}${ChatColor.GRAY}", warped.join("${ChatColor.GRAY}, ")).toComponent())
-                    sender.sendMessage(Locale.getLocale().partyWarpFailed.format("${ChatColor.YELLOW}${failed.size}${ChatColor.GRAY}", failed.join("${ChatColor.GRAY}, ")).toComponent())
+                    sender.sendMessage(Locale.getLocale(sender).warpResult.toComponent(ChatColor.GREEN))
+                    sender.sendMessage(Locale.getLocale(sender).partyAlreadyInServer.format("${ChatColor.YELLOW}${sameServer.size}${ChatColor.GRAY}", sameServer.join("${ChatColor.GRAY}, ")).toComponent())
+                    sender.sendMessage(Locale.getLocale(sender).partyWarped.format("${ChatColor.YELLOW}${warped.size}${ChatColor.GRAY}", warped.join("${ChatColor.GRAY}, ")).toComponent())
+                    sender.sendMessage(Locale.getLocale(sender).partyWarpFailed.format("${ChatColor.YELLOW}${failed.size}${ChatColor.GRAY}", failed.join("${ChatColor.GRAY}, ")).toComponent())
                     sender.sendMessage(FAP.blueSeparator.toComponent())
                 }.queue()
             }.queue()
@@ -325,11 +325,11 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
     private fun doJoin(sender: ProxiedPlayer, targetName: String) {
         val target = ProxyServer.getInstance().getPlayer(targetName)
         if (target == null) {
-            sender.sendMessage(Locale.getLocale().noPlayer.toComponent(ChatColor.RED))
+            sender.sendMessage(Locale.getLocale(sender).noPlayer.toComponent(ChatColor.RED))
             return
         }
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
-            if (!player.admin) return@then sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+            if (!player.admin) return@then sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
             val party = FAP.db.party.getParty(target.uniqueId).complete()
             if (party == null) {
                 sender.sendMessage("${ChatColor.RED}This player is not in the party.".toComponent())
@@ -340,10 +340,10 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             party.getOnlineMembers().then { players ->
                 players.remove(sender)
                 players.broadcastMessage(FAP.blueSeparator.toComponent())
-                players.broadcastMessage(Locale.getLocale().someoneJoinedParty.format("${player.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+                players.forEach { p -> p.sendMessage(Locale.getLocale(p).someoneJoinedParty.format("${player.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN)) }
                 players.broadcastMessage(FAP.blueSeparator.toComponent())
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().joinedParty.format("${party.leader.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).joinedParty.format("${party.leader.getFullName()}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
             }.queue()
         }.queue()
@@ -352,13 +352,13 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
     private fun doInvite(sender: ProxiedPlayer, targetName: String) {
         val target = ProxyServer.getInstance().getPlayer(targetName)
         if (target == null) {
-            sender.sendMessage(TextComponent("${ChatColor.RED}${Locale.getLocale().noPlayer}"))
+            sender.sendMessage(TextComponent("${ChatColor.RED}${Locale.getLocale(sender).noPlayer}"))
             return
         }
         FAP.db.players.getPlayer(target.uniqueId).then { targetPlayer ->
             val player = FAP.db.players.getPlayer(sender.uniqueId).complete()
             if (!targetPlayer.acceptingParty && !player.admin)
-                return@then sender.sendMessage(Locale.getLocale().cantSendPartyInvite.toComponent(ChatColor.RED))
+                return@then sender.sendMessage(Locale.getLocale(sender).cantSendPartyInvite.toComponent(ChatColor.RED))
             val party2 = FAP.db.party.getParty(sender.uniqueId).complete()
             var party: Party? = party2
             if (party2 == null) {
@@ -368,16 +368,16 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             }
             if (party == null) throw AssertionError("Should not be null")
             if (party.leader.uuid != sender.uniqueId) {
-                sender.sendMessage(Locale.getLocale().noPermission.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).noPermission.toComponent(ChatColor.RED))
                 return@then
             }
             if (targetPlayer.party != null || targetPlayer.invitedParty != null) {
-                sender.sendMessage(Locale.getLocale().inOtherParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).inOtherParty.toComponent(ChatColor.RED))
                 return@then
             }
             if (party.id == targetPlayer.party || party.id == targetPlayer.invitedParty) {
                 sender.sendMessage(FAP.blueSeparator.toComponent())
-                sender.sendMessage(Locale.getLocale().alreadyInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).alreadyInParty.toComponent(ChatColor.RED))
                 sender.sendMessage(FAP.blueSeparator.toComponent())
                 return@then
             }
@@ -385,14 +385,14 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
             targetPlayer.update().queue()
             party.getOnlineMembers().then { list ->
                 list.broadcastMessage(FAP.blueSeparator.toComponent())
-                list.broadcastMessage(Locale.getLocale().invited.format("${player.getFullName()}${ChatColor.YELLOW}", "${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                list.forEach { p -> p.sendMessage(Locale.getLocale(p).invited.format("${player.getFullName()}${ChatColor.YELLOW}", "${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
                 list.broadcastMessage(FAP.blueSeparator.toComponent())
             }.queue()
             target.sendMessage(FAP.blueSeparator.toComponent())
-            target.sendMessage(Locale.getLocale().invitedParty.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
-            val text = TextComponent(ChatColor.AQUA.toString() + Locale.getLocale().invitedParty2)
+            target.sendMessage(Locale.getLocale(target).invitedParty.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+            val text = TextComponent(ChatColor.AQUA.toString() + Locale.getLocale(sender).invitedParty2)
             text.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/p accept ${party.id}")
-            text.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("${ChatColor.YELLOW}${Locale.getLocale().clickToJoinParty}"))
+            text.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("${ChatColor.YELLOW}${Locale.getLocale(sender).clickToJoinParty}"))
             target.sendMessage(text)
             target.sendMessage(FAP.blueSeparator.toComponent())
             val task = ProxyServer.getInstance().scheduler.schedule(FAP.instance, {
@@ -401,12 +401,12 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
                 targetPlayer.update()
                 if (target.isConnected) {
                     target.sendMessage(FAP.blueSeparator.toComponent())
-                    target.sendMessage(Locale.getLocale().partyInviteExpiredReceiver.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                    target.sendMessage(Locale.getLocale(target).partyInviteExpiredReceiver.format("${player.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
                     target.sendMessage(FAP.blueSeparator.toComponent())
                 }
                 party.getOnlineMembers().then { list ->
                     list.broadcastMessage(FAP.blueSeparator.toComponent())
-                    list.broadcastMessage(Locale.getLocale().partyInviteExpired.format("${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
+                    list.forEach { p -> p.sendMessage(Locale.getLocale(p).partyInviteExpired.format("${targetPlayer.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW)) }
                     list.broadcastMessage(FAP.blueSeparator.toComponent())
                 }.queue()
             }, 1L, TimeUnit.MINUTES)
@@ -420,12 +420,12 @@ class PartyCommand: Command("party", null, "p"), TabExecutor {
         fun doList(sender: ProxiedPlayer) {
             FAP.db.party.getParty(sender.uniqueId).then { party ->
                 if (party == null) {
-                    sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                    sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                     return@then
                 }
-                sender.sendMessage("----- ${Locale.getLocale().partyLeader} -----".toComponent(ChatColor.GREEN))
+                sender.sendMessage("----- ${Locale.getLocale(sender).partyLeader} -----".toComponent(ChatColor.GREEN))
                 sender.sendMessage(name(party.leader).toComponent())
-                sender.sendMessage("----- ${Locale.getLocale().partyMember} -----".toComponent(ChatColor.GREEN))
+                sender.sendMessage("----- ${Locale.getLocale(sender).partyMember} -----".toComponent(ChatColor.GREEN))
                 var members = ""
                 party.getMembers().complete().forEach { player ->
                     if (player.uuid != party.leader.uuid) members += name(player)

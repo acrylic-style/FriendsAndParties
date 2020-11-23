@@ -26,13 +26,13 @@ class TellCommand: Command("tell", null, "w", "msg", "message"), TabExecutor {
     private fun doSend(sender: ProxiedPlayer, targetName: String, message: String) {
         val targetPlayer = ProxyServer.getInstance().getPlayer(targetName)
         if (targetPlayer == null) {
-            sender.sendMessage(Locale.getLocale().noPlayer.toComponent(ChatColor.RED))
+            sender.sendMessage(Locale.getLocale(sender).noPlayer.toComponent(ChatColor.RED))
             return
         }
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
             val target = FAP.db.players.getPlayer(targetPlayer.uniqueId).complete()
             if (!target.acceptingMessage && !player.admin)
-                return@then sender.sendMessage(Locale.getLocale().cantSendMessage.toComponent(ChatColor.RED))
+                return@then sender.sendMessage(Locale.getLocale(sender).cantSendMessage.toComponent(ChatColor.RED))
             sender.sendMessage("${ChatColor.LIGHT_PURPLE}To ${target.getFullName()}${ChatColor.GREEN}: ${ChatColor.WHITE}${message}".toComponent())
             targetPlayer.sendMessage("${ChatColor.LIGHT_PURPLE}From ${player.getFullName()}${ChatColor.GREEN}: ${ChatColor.WHITE}${message}".toComponent())
             targetPlayer.playSound("ORB_PICKUP", 1F, 1F)

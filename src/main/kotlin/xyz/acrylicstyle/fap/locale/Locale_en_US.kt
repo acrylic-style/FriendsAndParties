@@ -1,7 +1,7 @@
 package xyz.acrylicstyle.fap.locale
 
 @Suppress("ClassName")
-class Locale_en_US: Locale("en_US") {
+object Locale_en_US: Locale("en_US") {
     override val noPlayer = "Could not find player."
     override val invited = "%s invited %s to the party! They have 60 seconds to accept."
     override val notInParty = "You're not in party!"

@@ -1,9 +1,7 @@
 package xyz.acrylicstyle.fap.locale
 
-import xyz.acrylicstyle.fap.FAP
-
 @Suppress("ClassName")
-class Locale_ja_JP: Locale("ja_JP") {
+object Locale_ja_JP: Locale("ja_JP") {
     override val noPlayer = "プレイヤーが見つかりません。"
     override val invited = "%sが%sをパーティーに招待しました！参加まで1分の時間があります。"
     override val notInParty = "現在パーティーの中にいません。"

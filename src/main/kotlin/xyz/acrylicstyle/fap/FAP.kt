@@ -36,8 +36,8 @@ class FAP: Plugin(), Listener {
 
     override fun onEnable() {
         log = this.logger
-        Locale_ja_JP()
-        Locale_en_US()
+        Locale_ja_JP
+        Locale_en_US
         proxy.pluginManager.registerListener(this, this)
         config = ConfigurationProvider.getProvider(YamlConfiguration::class.java).load(File("./plugins/FAP/config.yml"))
         Locale.setLocale(config.getString("locale", "ja_JP"))

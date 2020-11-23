@@ -30,9 +30,9 @@ class PrivacyCommand: Command("privacy"), TabExecutor {
             player.acceptingParty = !player.acceptingParty
             player.update().queue()
             if (player.acceptingParty) {
-                sender.sendMessage(Locale.getLocale().privacyPartyTurnedOn.toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).privacyPartyTurnedOn.toComponent(ChatColor.GREEN))
             } else {
-                sender.sendMessage(Locale.getLocale().privacyPartyTurnedOff.toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).privacyPartyTurnedOff.toComponent(ChatColor.GREEN))
             }
         }.queue()
     }
@@ -42,9 +42,9 @@ class PrivacyCommand: Command("privacy"), TabExecutor {
             player.acceptingFriend = !player.acceptingFriend
             player.update().queue()
             if (player.acceptingFriend) {
-                sender.sendMessage(Locale.getLocale().privacyFriendTurnedOn.toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).privacyFriendTurnedOn.toComponent(ChatColor.GREEN))
             } else {
-                sender.sendMessage(Locale.getLocale().privacyFriendTurnedOff.toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).privacyFriendTurnedOff.toComponent(ChatColor.GREEN))
             }
         }.queue()
     }
@@ -54,9 +54,9 @@ class PrivacyCommand: Command("privacy"), TabExecutor {
             player.acceptingMessage = !player.acceptingMessage
             player.update().queue()
             if (player.acceptingMessage) {
-                sender.sendMessage(Locale.getLocale().privacyMessageTurnedOn.toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).privacyMessageTurnedOn.toComponent(ChatColor.GREEN))
             } else {
-                sender.sendMessage(Locale.getLocale().privacyMessageTurnedOff.toComponent(ChatColor.GREEN))
+                sender.sendMessage(Locale.getLocale(sender).privacyMessageTurnedOff.toComponent(ChatColor.GREEN))
             }
         }.queue()
     }

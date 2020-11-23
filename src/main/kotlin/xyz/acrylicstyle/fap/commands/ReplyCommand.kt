@@ -17,8 +17,8 @@ class ReplyCommand: Command("reply", null, "r") {
         if (args.isEmpty()) return sender.sendMessage("${ChatColor.RED}/r <Message...>".toComponent())
         val message = ICollectionList.asList(args).join(" ")
         FAP.db.players.getPlayer(sender.uniqueId).then { player ->
-            val lastUUID = player.lastMessageFrom ?: return@then sender.sendMessage(Locale.getLocale().invalidArgs.toComponent(ChatColor.RED))
-            val targetPlayer = ProxyServer.getInstance().getPlayer(lastUUID) ?: return@then sender.sendMessage(Locale.getLocale().offlinePlayer.toComponent(ChatColor.RED))
+            val lastUUID = player.lastMessageFrom ?: return@then sender.sendMessage(Locale.getLocale(sender).invalidArgs.toComponent(ChatColor.RED))
+            val targetPlayer = ProxyServer.getInstance().getPlayer(lastUUID) ?: return@then sender.sendMessage(Locale.getLocale(sender).offlinePlayer.toComponent(ChatColor.RED))
             val target = FAP.db.players.getPlayer(lastUUID).complete()
             sender.sendMessage("${ChatColor.LIGHT_PURPLE}To ${target.getFullName()}: ${ChatColor.WHITE}${message}".toComponent())
             targetPlayer.sendMessage("${ChatColor.LIGHT_PURPLE}From ${player.getFullName()}: ${ChatColor.WHITE}${message}".toComponent())

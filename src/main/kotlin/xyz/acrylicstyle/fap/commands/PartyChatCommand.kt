@@ -21,7 +21,7 @@ class PartyChatCommand: Command("partychat", null, "pc") {
             val player = promises[0] as Player
             val party = promises[1] as Party?
             if (party == null) {
-                sender.sendMessage(Locale.getLocale().notInParty.toComponent(ChatColor.RED))
+                sender.sendMessage(Locale.getLocale(sender).notInParty.toComponent(ChatColor.RED))
                 return@then
             }
             val message = ICollectionList.asList(args).join(" ")
