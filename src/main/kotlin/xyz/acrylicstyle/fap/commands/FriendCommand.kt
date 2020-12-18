@@ -143,7 +143,7 @@ class FriendCommand: Command("friend", null, "fr"/*, "f"*/), TabExecutor {
         tasks[target.uniqueId]!!.remove(sender.uniqueId)?.cancel()
         FAP.db.friends.addFriend(sender.uniqueId, target.uniqueId).complete()
         target.sendMessage(FAP.blueSeparator.toComponent())
-        target.sendMessage(Locale.getLocale(sender).friendAccepted.format("${senderFullName}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
+        target.sendMessage(Locale.getLocale(target).friendAccepted.format("${senderFullName}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
         target.sendMessage(FAP.blueSeparator.toComponent())
         sender.sendMessage(FAP.blueSeparator.toComponent())
         sender.sendMessage(Locale.getLocale(sender).friendAccepted.format("${targetFullName}${ChatColor.GREEN}").toComponent(ChatColor.GREEN))
@@ -174,7 +174,7 @@ class FriendCommand: Command("friend", null, "fr"/*, "f"*/), TabExecutor {
             }
             FAP.db.friends.removeFriend(sender.uniqueId, target.uuid).complete()
             sender.sendMessage(FAP.blueSeparator.toComponent())
-            sender.sendMessage(Locale.getLocale(sender).removedFriend.format("${target.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.GREEN))
+            sender.sendMessage(Locale.getLocale(sender).removedFriend.format("${target.getFullName()}${ChatColor.YELLOW}").toComponent(ChatColor.YELLOW))
             sender.sendMessage(FAP.blueSeparator.toComponent())
         }.queue()
     }
