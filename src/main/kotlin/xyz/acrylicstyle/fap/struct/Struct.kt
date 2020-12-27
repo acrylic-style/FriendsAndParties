@@ -8,6 +8,7 @@ import net.md_5.bungee.api.connection.Server
 import org.jetbrains.annotations.Contract
 import util.CollectionList
 import util.DataSerializer
+import util.ICollectionList
 import util.promise.Promise
 import xyz.acrylicstyle.fap.FAP
 import xyz.acrylicstyle.sql.Table
@@ -25,7 +26,7 @@ class FriendsTable(private val table: Table) {
     fun getFriends(player: UUID): Promise<CollectionList<UUID>> =
         table.findAll(FindOptions.Builder().addWhere("uuid", player.toString()).build()).then { it.map { td -> UUID.fromString(td.getString("uuid2")) } }
 
-    fun getOnlineFriends(player: UUID): Promise<CollectionList<ProxiedPlayer>> = getFriends(player).then { l -> l.getOnlinePlayers() }
+    fun getOnlineFriends(player: UUID): Promise<ICollectionList<ProxiedPlayer>> = getFriends(player).then { l -> l.getOnlinePlayers() }
 
     fun isFriend(player1: UUID, player2: UUID): Promise<Boolean> =
         table.findOne(FindOptions.Builder().addWhere("uuid", player1.toString()).addWhere("uuid2", player2.toString()).build()).then { td -> td != null }
@@ -144,13 +145,13 @@ data class Party(
     }
 
     @Contract(pure = true)
-    fun getMembers(): Promise<CollectionList<Player>> = FAP.db.players.getPartyPlayers(id).then { l -> members = l; members }
+    fun getMembers(): Promise<ICollectionList<Player>> = FAP.db.players.getPartyPlayers(id).then { l -> members = l; members }
 
     @Contract(pure = true)
-    fun getOnlineMembers(): Promise<CollectionList<ProxiedPlayer>> = getMembers().then { l -> l.map { p -> ProxyServer.getInstance().getPlayer(p.uuid) }.nonNull() }
+    fun getOnlineMembers(): Promise<ICollectionList<ProxiedPlayer>> = getMembers().then { l -> l.map { p -> ProxyServer.getInstance().getPlayer(p.uuid) }.nonNull() }
 
     @Contract(pure = true)
-    fun getOfflineMembers(): Promise<CollectionList<Player>> = getMembers().then { l -> l.filter { p -> ProxyServer.getInstance().getPlayer(p.uuid) == null } }
+    fun getOfflineMembers(): Promise<ICollectionList<Player>> = getMembers().then { l -> l.filter { p -> ProxyServer.getInstance().getPlayer(p.uuid) == null } }
 
     fun update() = FAP.db.party.updateParty(this)
 }
@@ -206,10 +207,10 @@ data class Player(
     fun isOnline(): Boolean = ProxyServer.getInstance().getPlayer(uuid) != null
 }
 
-fun CollectionList<UUID>.getOnlinePlayers() = this.map { uuid -> ProxyServer.getInstance().getPlayer(uuid) }.nonNull()
-fun CollectionList<UUID>.getPlayers() = this.map { uuid -> FAP.db.players.getPlayer(uuid) }
-fun CollectionList<String>.doFilter(s: String) = this.filter { s2 -> s2.toLowerCase().startsWith(s.toLowerCase()) }
-fun CollectionList<ProxiedPlayer>.broadcastMessage(text: TextComponent) = this.forEach { p -> p.sendMessage(text) }
+fun ICollectionList<UUID>.getOnlinePlayers() = this.map { uuid -> ProxyServer.getInstance().getPlayer(uuid) }.nonNull()
+fun ICollectionList<UUID>.getPlayers() = this.map { uuid -> FAP.db.players.getPlayer(uuid) }
+fun ICollectionList<String>.doFilter(s: String) = this.filter { s2 -> s2.toLowerCase().startsWith(s.toLowerCase()) }
+fun ICollectionList<ProxiedPlayer>.broadcastMessage(text: TextComponent) = this.forEach { p -> p.sendMessage(text) }
 
 fun String.toComponent() = TextComponent(this)
 fun String.toComponent(color: ChatColor) = TextComponent("${color}$this")

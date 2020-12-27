@@ -16,10 +16,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("xyz.acrylicstyle:sequelize4j:0.3.7a") {
+    implementation("xyz.acrylicstyle:sequelize4j:0.3.9") {
         exclude("xyz.acrylicstyle", "java-util-all")
     }
-    compileOnly("xyz.acrylicstyle:java-util-all:0.11.40a")
+    compileOnly("xyz.acrylicstyle:java-util-all:0.13.0")
     compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
     compileOnly("xyz.acrylicstyle:UniversalLanguageSelector:0.0.2")
 }
