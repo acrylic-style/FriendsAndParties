@@ -182,9 +182,9 @@ data class Player(
             td.getString("prefix"),
             td.getBoolean("admin") ?: false,
             td.getString("lastMessageFrom")?.let { UUID.fromString(it) },
-            td.getBoolean("acceptingParty") ?: true,
-            td.getBoolean("acceptingFriend") ?: true,
-            td.getBoolean("acceptingMessage") ?: true,
+            td.getBoolean("acceptingParty") ?: false,
+            td.getBoolean("acceptingFriend") ?: false,
+            td.getBoolean("acceptingMessage") ?: false,
         )
     }
 
